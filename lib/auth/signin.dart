@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/screens/home_screen.dart';
+import 'package:food_app/providers/user_provider.dart';
+import 'package:food_app/screens/home/home_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -12,6 +14,8 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  UserProvider? userProvider;
+
   /// google SignIn method are here..
   _googleSignUp() async {
     try {
@@ -30,7 +34,12 @@ class _SignInState extends State<SignIn> {
       );
 
       final User? user = (await auth.signInWithCredential(credential)).user;
-      // print("signed in " + user.displayName);
+      userProvider?.addUserData(
+        currentUser: user,
+        userName: user?.displayName,
+        userEmail: user?.email,
+        userImage: user?.photoURL,
+      );
 
       return user;
     } catch (e) {
@@ -42,6 +51,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -102,9 +112,10 @@ class _SignInState extends State<SignIn> {
                     height: 20,
                   ),
                   InkWell(
-                    onTap: () {
-                      _googleSignUp().then((value) => Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
+                    onTap: () async {
+                      await _googleSignUp().then((value) =>
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
                                   builder: (BuildContext context) {
                             return const HomeScreen();
                           })));
