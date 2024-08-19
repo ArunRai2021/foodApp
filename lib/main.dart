@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/auth/signin.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/providers/product_provider.dart';
+import 'package:food_app/providers/review_cart_provider.dart';
 import 'package:food_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ProductProvider(),
         ),
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => ReviewCartProvider()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

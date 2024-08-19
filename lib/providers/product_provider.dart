@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:food_app/model/product_model.dart';
-import 'package:food_app/screens/search/search.dart';
 
 class ProductProvider with ChangeNotifier {
   List<ProductModel> herbsProductList = [];
@@ -12,9 +11,12 @@ class ProductProvider with ChangeNotifier {
 
   productModels(QueryDocumentSnapshot element) {
     productModel = ProductModel(
-        productImage: element.get("productImage"),
-        productName: element.get("productName"),
-        productPrice: element.get("productPrice"));
+      productImage: element.get("productImage"),
+      productName: element.get("productName"),
+      productPrice: element.get("productPrice"),
+      productId: element.get("productId"),
+    );
+
     search.add(productModel);
   }
 

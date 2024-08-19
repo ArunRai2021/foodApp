@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children:
                 productProvider.getHerbsProductDataList.map((herbsProductData) {
               return SingleProduct(
+                productId: herbsProductData.productId.toString(),
                 productImage: herbsProductData.productImage.toString(),
                 productName: herbsProductData.productName.toString(),
                 productPrice: herbsProductData.productPrice.toString(),
@@ -108,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: List.generate(productProvider.getFreshFruitList.length,
                   (index) {
             return SingleProduct(
+              productId:
+                  productProvider.getFreshFruitList[index].productId.toString(),
               productImage: productProvider
                   .getFreshFruitList[index].productImage
                   .toString(),
@@ -173,6 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: List.generate(productProvider.getrootVegiTable.length,
                   (index) {
             return SingleProduct(
+              productId:
+                  productProvider.getrootVegiTable[index].productId.toString(),
               productImage: productProvider.getrootVegiTable[index].productImage
                   .toString(),
               productName: productProvider.getrootVegiTable[index].productName

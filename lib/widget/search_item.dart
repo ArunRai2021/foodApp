@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/providers/review_cart_provider.dart';
+import 'package:provider/provider.dart';
 
 class SingleItem extends StatelessWidget {
   bool isBool = false;
   String? productImage;
   String? productName;
   String? productPrice;
+  String? productId;
+  int? productQuantity;
 
-  SingleItem(
-      {super.key,
-      required this.isBool,
-      this.productImage,
-      this.productName,
-      this.productPrice});
+  SingleItem({
+    super.key,
+    required this.isBool,
+    this.productImage,
+    this.productName,
+    this.productPrice,
+    this.productId,
+    this.productQuantity,
+  });
 
   @override
   Widget build(BuildContext context) {
+    ReviewCartProvider reviewCardProvider = Provider.of(context);
     return Row(
       children: [
         Expanded(
@@ -83,9 +91,14 @@ class SingleItem extends StatelessWidget {
             ? Expanded(
                 child: Column(
                   children: [
-                    const Icon(
-                      Icons.delete,
-                      color: Colors.black,
+                    GestureDetector(
+                      onTap: () async {
+                        showAlertDialog(context, reviewCardProvider, productId);
+                      },
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.black,
+                      ),
                     ),
                     const SizedBox(
                       height: 5,
@@ -123,6 +136,33 @@ class SingleItem extends StatelessWidget {
                     ))),
               )
       ],
+    );
+  }
+
+  showAlertDialog(
+      BuildContext context, ReviewCartProvider reviewCartProvider, cartId) {
+    Widget cancelButton = TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text("No"));
+    Widget continueButton = TextButton(
+        onPressed: () {
+          reviewCartProvider.reviewCardDataDelete(cartId);
+          Navigator.of(context).pop();
+        },
+        child: const Text("Yes"));
+    AlertDialog alert = AlertDialog(
+      title: const Text("Cart Product"),
+      content: const Text("Are You Delete on Cart Product"),
+      actions: [cancelButton, continueButton],
+    );
+    // Show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
