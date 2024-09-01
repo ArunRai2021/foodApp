@@ -25,7 +25,7 @@ class Count extends StatefulWidget {
 
 class _CountState extends State<Count> {
   bool activeAddButton = false;
-  int count = 0;
+  int count = 1;
 
   getAddAndQuantity() {
     FirebaseFirestore.instance

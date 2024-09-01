@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       productName: herbsProductData.productName.toString(),
                       productImage: herbsProductData.productImage.toString(),
                       productPrice: herbsProductData.productPrice.toString(),
+                      productId: herbsProductData.productId.toString(),
                     );
                   }));
                 },
@@ -132,6 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     productPrice: productProvider
                         .getFreshFruitList[index].productPrice
                         .toString(),
+                    productId: productProvider
+                        .getFreshFruitList[index].productId
+                        .toString(),
                   );
                 }));
               },
@@ -196,6 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         .toString(),
                     productPrice: productProvider
                         .getrootVegiTable[index].productPrice
+                        .toString(),
+                    productId: productProvider.getrootVegiTable[index].productId
                         .toString(),
                   );
                 }));

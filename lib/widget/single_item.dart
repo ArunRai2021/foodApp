@@ -10,22 +10,27 @@ class SingleItem extends StatelessWidget {
   String? productPrice;
   String? productId;
   int? productQuantity;
+  bool? isWishList = false;
+  Function()? onDelete;
 
-  SingleItem({
-    super.key,
-    required this.isBool,
-    this.productImage,
-    this.productName,
-    this.productPrice,
-    this.productId,
-    this.productQuantity,
-  });
+  SingleItem(
+      {super.key,
+      required this.isBool,
+      this.productImage,
+      this.productName,
+      this.productPrice,
+      this.productId,
+      this.productQuantity,
+      this.isWishList,
+      this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     ReviewCartProvider reviewCardProvider = Provider.of(context);
+    reviewCardProvider.getReviewCarData();
     return Row(
       children: [
+        // product Image are here..
         Expanded(
           child: SizedBox(
             height: 100,
@@ -38,6 +43,8 @@ class SingleItem extends StatelessWidget {
             ),
           ),
         ),
+
+        /// row second element are here we show the in column productName rs anf quantity,
         Expanded(
             child: SizedBox(
                 height: 100,
@@ -92,9 +99,7 @@ class SingleItem extends StatelessWidget {
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: () async {
-                        showAlertDialog(context, reviewCardProvider, productId);
-                      },
+                      onTap: onDelete,
                       child: const Icon(
                         Icons.delete,
                         color: Colors.black,
@@ -103,21 +108,23 @@ class SingleItem extends StatelessWidget {
                     const SizedBox(
                       height: 5,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.grey)),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 6),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.remove),
-                          Text("1"),
-                          Icon(Icons.add)
-                        ],
-                      ),
-                    )
+                    isWishList == false
+                        ? Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.grey)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 6),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.remove),
+                                Text("1"),
+                                Icon(Icons.add)
+                              ],
+                            ),
+                          )
+                        : Container()
                   ],
                 ),
               )
@@ -136,33 +143,6 @@ class SingleItem extends StatelessWidget {
                     ))),
               )
       ],
-    );
-  }
-
-  showAlertDialog(
-      BuildContext context, ReviewCartProvider reviewCartProvider, cartId) {
-    Widget cancelButton = TextButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text("No"));
-    Widget continueButton = TextButton(
-        onPressed: () {
-          reviewCartProvider.reviewCardDataDelete(cartId);
-          Navigator.of(context).pop();
-        },
-        child: const Text("Yes"));
-    AlertDialog alert = AlertDialog(
-      title: const Text("Cart Product"),
-      content: const Text("Are You Delete on Cart Product"),
-      actions: [cancelButton, continueButton],
-    );
-    // Show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }

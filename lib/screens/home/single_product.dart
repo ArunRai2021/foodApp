@@ -50,30 +50,76 @@ class SingleProduct extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                          child: Container(
-                        height: 30,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: const Padding(
-                          padding: EdgeInsets.all(2.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "50 Gram",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600),
+                          child: GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      title: const Text("100 gram"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.photo),
+                                      title: const Text("500 gram"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.photo),
+                                      title: const Text("50 gram"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.photo),
+                                      title: const Text("80 gram"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.photo),
+                                      title: const Text("120 gram"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        child: Container(
+                          height: 30,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "50 Gram",
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600),
+                                  ),
                                 ),
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                size: 20,
-                                color: Colors.yellow,
-                              )
-                            ],
+                                Icon(
+                                  Icons.arrow_drop_down,
+                                  size: 20,
+                                  color: Colors.yellow,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       )),

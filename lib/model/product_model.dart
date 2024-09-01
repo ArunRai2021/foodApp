@@ -3,7 +3,12 @@ class ProductModel {
   String? productImage;
   int? productPrice;
   String? productId;
+  int? productQuantity;
 
   ProductModel(
-      {this.productName, this.productImage, this.productPrice, this.productId});
+      {this.productName,
+      this.productImage,
+      this.productPrice,
+      this.productId,
+      this.productQuantity});
 }

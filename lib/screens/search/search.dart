@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/model/product_model.dart';
-import 'package:food_app/widget/search_item.dart';
+import 'package:food_app/widget/single_item.dart';
 
 class Search extends StatefulWidget {
   final List<ProductModel> search;

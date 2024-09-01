@@ -2,11 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/model/review_cart_model.dart';
 import 'package:food_app/providers/review_cart_provider.dart';
-import 'package:food_app/widget/search_item.dart';
+import 'package:food_app/widget/single_item.dart';
 import 'package:provider/provider.dart';
 
 class ReviewCart extends StatelessWidget {
-  const ReviewCart({super.key});
+  ReviewCart({super.key});
+
+  ReviewCartProvider reviewCartProvider = ReviewCartProvider();
+
+  showAlertDialog(BuildContext context, ReviewCartModel delete) {
+    Widget cancelButton = TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text("No"));
+    Widget continueButton = TextButton(
+        onPressed: () {
+          reviewCartProvider.reviewCardDataDelete(delete.cartId);
+          Navigator.of(context).pop();
+        },
+        child: const Text("Yes"));
+    AlertDialog alert = AlertDialog(
+      title: const Text("Cart Product"),
+      content: const Text("Are You Delete on Cart Product"),
+      actions: [cancelButton, continueButton],
+    );
+    // Show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +77,15 @@ class ReviewCart extends StatelessWidget {
                     ),
                     SingleItem(
                       isBool: true,
+                      isWishList: false,
                       productImage: data.cartImage,
                       productName: data.cartName,
                       productPrice: data.cartPrice,
                       productId: data.cartId,
                       productQuantity: data.cartQuantity,
+                      onDelete: () {
+                        showAlertDialog(context, data);
+                      },
                     ),
                   ],
                 );

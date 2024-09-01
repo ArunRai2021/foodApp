@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/providers/wish_list_provider.dart';
+import 'package:food_app/widget/count.dart';
+import 'package:provider/provider.dart';
 
 enum SigninCharacter { fill, outline }
 
@@ -7,12 +12,15 @@ class ProductOverView extends StatefulWidget {
   final String productName;
   final String productImage;
   final String productPrice;
+  final String productId;
 
-  const ProductOverView(
-      {super.key,
-      required this.productName,
-      required this.productImage,
-      required this.productPrice});
+  const ProductOverView({
+    super.key,
+    required this.productName,
+    required this.productImage,
+    required this.productPrice,
+    required this.productId,
+  });
 
   @override
   State<ProductOverView> createState() => _ProductOverViewState();
@@ -21,38 +29,68 @@ class ProductOverView extends StatefulWidget {
 class _ProductOverViewState extends State<ProductOverView> {
   SigninCharacter _charecter = SigninCharacter.fill;
 
-  Widget bottomNavigationBar(
-      {required Color iconColor,
-      required Color backGroundColor,
-      required Color color,
-      required String title,
-      required IconData iconData}) {
+  Widget bottomNavigationBar({
+    required Color iconColor,
+    required Color backGroundColor,
+    required Color color,
+    required String title,
+    required IconData iconData,
+    final VoidCallback? onTap,
+  }) {
     return Expanded(
-        child: Container(
-      padding: const EdgeInsets.all(20),
-      color: backGroundColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            iconData,
-            size: 17,
-            color: iconColor,
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            title,
-            style: TextStyle(color: color),
-          )
-        ],
+        child: GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        color: backGroundColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              iconData,
+              size: 17,
+              color: iconColor,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(color: color),
+              ),
+            )
+          ],
+        ),
       ),
     ));
   }
 
+  bool wishListBool = false;
+
+  /// getWishListBool are here...
+  getWishListBool() {
+    FirebaseFirestore.instance
+        .collection("WishList")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("YourWishListCart")
+        .doc(widget.productId)
+        .get()
+        .then((value) {
+      if (mounted) {
+        if (value.exists) {
+          setState(() {
+            wishListBool = value.get("wishList");
+          });
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    WishListProvider wishListProvider = Provider.of(context);
+    getWishListBool();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -68,8 +106,27 @@ class _ProductOverViewState extends State<ProductOverView> {
               iconColor: Colors.grey,
               backGroundColor: textColor,
               color: Colors.white70,
-              title: "Add To WishList",
-              iconData: Icons.favorite_border_outlined),
+              title: wishListBool == false
+                  ? "Add To WishList"
+                  : "Added To wishList",
+              iconData: wishListBool == false
+                  ? Icons.favorite_border_outlined
+                  : Icons.favorite,
+              onTap: () {
+                setState(() {
+                  wishListBool = !wishListBool;
+                });
+                if (wishListBool == true) {
+                  wishListProvider.addWishListData(
+                      wishListId: widget.productId,
+                      wishListImage: widget.productImage,
+                      wishListPrice: int.parse(widget.productPrice.toString()),
+                      wishListName: widget.productName,
+                      wishListQuantity: 2);
+                } else {
+                  wishListProvider.deleteWishList(widget.productId);
+                }
+              }),
           bottomNavigationBar(
               iconColor: Colors.white70,
               backGroundColor: primaryColor,
@@ -82,7 +139,7 @@ class _ProductOverViewState extends State<ProductOverView> {
         children: [
           Expanded(
               flex: 2,
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 child: Column(
                   children: [
@@ -112,43 +169,28 @@ class _ProductOverViewState extends State<ProductOverView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 3,
-                                backgroundColor: Colors.green[700],
-                              ),
-                              Radio(
-                                  value: SigninCharacter.fill,
-                                  groupValue: _charecter,
-                                  activeColor: Colors.green[700],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _charecter = value!;
-                                    });
-                                  })
-                            ],
+                          CircleAvatar(
+                            radius: 3,
+                            backgroundColor: Colors.green[700],
                           ),
+                          Radio(
+                              value: SigninCharacter.fill,
+                              groupValue: _charecter,
+                              activeColor: Colors.green[700],
+                              onChanged: (value) {
+                                setState(() {
+                                  _charecter = value!;
+                                });
+                              }),
                           const Text("\$50"),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  size: 17,
-                                  color: primaryColor,
-                                ),
-                                Text(
-                                  "Add",
-                                  style: TextStyle(color: primaryColor),
-                                )
-                              ],
+                          SizedBox(
+                            height: 35,
+                            width: 100,
+                            child: Count(
+                              productPrice: widget.productPrice,
+                              productName: widget.productName,
+                              productImage: widget.productImage,
+                              productId: widget.productId,
                             ),
                           )
                         ],

@@ -16,7 +16,8 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   UserProvider? userProvider;
 
-  /// google SignIn method are here..
+
+  // google SignIn method are here..
   _googleSignUp() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(

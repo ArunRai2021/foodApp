@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/screens/my_profile/my_profile.dart';
 import 'package:food_app/screens/reviewCart/review_cart.dart';
+import 'package:food_app/screens/wishList/wishList.dart';
 
 class DrawerSide extends StatelessWidget {
   const DrawerSide({super.key});
@@ -77,7 +78,7 @@ class DrawerSide extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context) {
-                    return const ReviewCart();
+                    return ReviewCart();
                   }));
                 }),
             listTile(
@@ -92,6 +93,15 @@ class DrawerSide extends StatelessWidget {
             listTile(
                 icon: Icons.notifications_outlined, title: "Notifications"),
             listTile(icon: Icons.star_outline, title: "Rating and Review"),
+            listTile(
+                icon: Icons.favorite_border,
+                title: "WishList",
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return WishList();
+                  }));
+                }),
             listTile(icon: Icons.copy_outlined, title: "Raise a Complain"),
             listTile(icon: Icons.format_quote_outlined, title: "FAQs"),
             Container(
