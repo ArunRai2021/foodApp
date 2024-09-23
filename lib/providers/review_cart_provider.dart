@@ -10,6 +10,7 @@ class ReviewCartProvider with ChangeNotifier {
     String? cartImage,
     String? cartPrice,
     int? cartQuantity,
+    var cartUnit,
   }) async {
     await FirebaseFirestore.instance
         .collection("ReviewCart")
@@ -22,6 +23,7 @@ class ReviewCartProvider with ChangeNotifier {
       "cartImage": cartImage,
       "cartPrice": cartPrice,
       "cartQuantity": cartQuantity,
+      "cartUnit": cartUnit,
       "isAdd": true,
     });
   }
@@ -59,11 +61,13 @@ class ReviewCartProvider with ChangeNotifier {
         .get();
     for (var element in reviewCartValue.docs) {
       ReviewCartModel reviewCartModel = ReviewCartModel(
-          cartId: element.get("cartId"),
-          cartImage: element.get("cartImage"),
-          cartName: element.get("cartName"),
-          cartPrice: element.get("cartPrice"),
-          cartQuantity: element.get("cartQuantity"));
+        cartId: element.get("cartId"),
+        cartImage: element.get("cartImage"),
+        cartName: element.get("cartName"),
+        cartPrice: element.get("cartPrice"),
+        cartQuantity: element.get("cartQuantity"),
+        cartUnit: element.get("cartUnit"),
+      );
       newList.add(reviewCartModel);
     }
     reviewCartDataList = newList;
@@ -74,6 +78,19 @@ class ReviewCartProvider with ChangeNotifier {
     return reviewCartDataList;
   }
 
+  /// totalPrice
+  double getTotalPrice() {
+    double total = 0.0;
+    for (var element in reviewCartDataList) {
+      // Convert cartPrice from String to double
+      double price = double.tryParse(element.cartPrice.toString()) ?? 0.0;
+      int quantity =
+          (element.cartQuantity is int) ? element.cartQuantity as int : 0;
+      total += price * quantity;
+    }
+    return total;
+  }
+
   void reviewCardDataDelete(cartId) {
     FirebaseFirestore.instance
         .collection("ReviewCart")
@@ -81,6 +98,12 @@ class ReviewCartProvider with ChangeNotifier {
         .collection("YourReviewCart")
         .doc(cartId)
         .delete();
+    notifyListeners();
+  }
+
+// this is used for single Item
+  void decrementCounter(int counter) {
+    counter--;
     notifyListeners();
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/providers/product_provider.dart';
+import 'package:food_app/providers/user_provider.dart';
 import 'package:food_app/screens/ProductOverView/product_overview.dart';
 import 'package:food_app/screens/home/drawer_side.dart';
 import 'package:food_app/screens/home/single_product.dart';
+import 'package:food_app/screens/reviewCart/review_cart.dart';
 import 'package:food_app/screens/search/search.dart';
 import 'package:provider/provider.dart';
 
@@ -57,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 productImage: herbsProductData.productImage.toString(),
                 productName: herbsProductData.productName.toString(),
                 productPrice: herbsProductData.productPrice.toString(),
+                productUnit: herbsProductData.productUnit,
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context) {
@@ -120,6 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
               productPrice: productProvider
                   .getFreshFruitList[index].productPrice
                   .toString(),
+              productUnit: productProvider.getFreshFruitList[index].productUnit,
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (BuildContext context) {
@@ -188,6 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .toString(),
               productPrice: productProvider.getrootVegiTable[index].productPrice
                   .toString(),
+              productUnit: productProvider.getrootVegiTable[index].productUnit,
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (BuildContext context) {
@@ -225,9 +230,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     productProvider = Provider.of(context);
+    UserProvider? userProvider = Provider.of(context);
+    userProvider?.getUserData();
     return Scaffold(
       backgroundColor: const Color(0xffcbcbcb),
-      drawer: const DrawerSide(),
+      drawer: DrawerSide(
+        userProvider: userProvider,
+      ),
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
@@ -255,15 +264,23 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.0),
-            child: CircleAvatar(
-              radius: 12,
-              backgroundColor: Color(0xffd4d181),
-              child: Icon(
-                Icons.shop,
-                size: 17,
-                color: Colors.black,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return ReviewCart();
+                }));
+              },
+              child: const CircleAvatar(
+                radius: 12,
+                backgroundColor: Color(0xffd4d181),
+                child: Icon(
+                  Icons.shop,
+                  size: 17,
+                  color: Colors.black,
+                ),
               ),
             ),
           )

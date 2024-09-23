@@ -10,14 +10,15 @@ class Count extends StatefulWidget {
   String? productImage;
   String? productId;
   String? productPrice;
+  var productUnit;
 
-  Count({
-    super.key,
-    this.productPrice,
-    this.productName,
-    this.productImage,
-    this.productId,
-  });
+  Count(
+      {super.key,
+      this.productPrice,
+      this.productName,
+      this.productImage,
+      this.productId,
+      this.productUnit});
 
   @override
   State<Count> createState() => _CountState();
@@ -75,11 +76,12 @@ class _CountState extends State<Count> {
                         count--;
                       });
                       reviewCartProvider.updateReviewCartData(
-                          cartId: widget.productId,
-                          cartImage: widget.productImage,
-                          cartQuantity: count,
-                          cartPrice: widget.productPrice,
-                          cartName: widget.productName);
+                        cartId: widget.productId,
+                        cartImage: widget.productImage,
+                        cartQuantity: count,
+                        cartPrice: widget.productPrice,
+                        cartName: widget.productName,
+                      );
                     }
                   },
                   child: const Icon(
@@ -120,12 +122,12 @@ class _CountState extends State<Count> {
                     activeAddButton = true;
                   });
                   reviewCartProvider.addReviewCartData(
-                    cartId: widget.productId,
-                    cartImage: widget.productImage,
-                    cartName: widget.productName,
-                    cartPrice: widget.productPrice,
-                    cartQuantity: count,
-                  );
+                      cartId: widget.productId,
+                      cartImage: widget.productImage,
+                      cartName: widget.productName,
+                      cartPrice: widget.productPrice,
+                      cartQuantity: count,
+                      cartUnit: widget.productUnit);
                 },
                 child: Text(
                   "Add",

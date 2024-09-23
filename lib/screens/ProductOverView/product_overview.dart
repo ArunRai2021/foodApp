@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/providers/wish_list_provider.dart';
+import 'package:food_app/screens/reviewCart/review_cart.dart';
 import 'package:food_app/widget/count.dart';
 import 'package:provider/provider.dart';
 
@@ -128,6 +129,12 @@ class _ProductOverViewState extends State<ProductOverView> {
                 }
               }),
           bottomNavigationBar(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return ReviewCart();
+                }));
+              },
               iconColor: Colors.white70,
               backGroundColor: primaryColor,
               color: textColor,

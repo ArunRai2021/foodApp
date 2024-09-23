@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/widget/count.dart';
+import 'package:food_app/widget/product_unit.dart';
 
-class SingleProduct extends StatelessWidget {
+class SingleProduct extends StatefulWidget {
   final String productImage;
   final String productName;
   final VoidCallback? onTap;
   String productPrice;
   final String productId;
+  final List<dynamic>? productUnit;
 
   SingleProduct(
       {super.key,
@@ -14,12 +16,26 @@ class SingleProduct extends StatelessWidget {
       required this.productName,
       required this.productPrice,
       required this.productId,
-      this.onTap});
+      this.onTap,
+      this.productUnit});
+
+  @override
+  State<SingleProduct> createState() => _SingleProductState();
+}
+
+class _SingleProductState extends State<SingleProduct> {
+  String selectedUnit = "Select";
+
+  void _onUnitSelected(String unit) {
+    setState(() {
+      selectedUnit = unit;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5),
         height: 240,
@@ -31,7 +47,7 @@ class SingleProduct extends StatelessWidget {
             Expanded(
                 flex: 2,
                 child: Image.network(
-                  productImage,
+                  widget.productImage,
                   height: 150,
                   width: 150,
                 )),
@@ -42,11 +58,11 @@ class SingleProduct extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    productName,
+                    widget.productName,
                     style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
-                  Text("$productPrice\$/50 Gram"),
+                  Text("${widget.productPrice}\$/50 Gram"),
                   Row(
                     children: [
                       Expanded(
@@ -55,43 +71,9 @@ class SingleProduct extends StatelessWidget {
                           showModalBottomSheet(
                               context: context,
                               builder: (context) {
-                                return Column(
-                                  children: <Widget>[
-                                    ListTile(
-                                      title: const Text("100 gram"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.photo),
-                                      title: const Text("500 gram"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.photo),
-                                      title: const Text("50 gram"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.photo),
-                                      title: const Text("80 gram"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.photo),
-                                      title: const Text("120 gram"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
+                                return ProductUnit(
+                                  productUnit: widget.productUnit!.toList(),
+                                  onUnitSelected: _onUnitSelected,
                                 );
                               });
                         },
@@ -101,19 +83,19 @@ class SingleProduct extends StatelessWidget {
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
                               borderRadius: BorderRadius.circular(8)),
-                          child: const Padding(
-                            padding: EdgeInsets.all(2.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Text(
-                                    "50 Gram",
-                                    style: TextStyle(
+                                    selectedUnit,
+                                    style: const TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),
-                                Icon(
+                                const Icon(
                                   Icons.arrow_drop_down,
                                   size: 20,
                                   color: Colors.yellow,
@@ -127,10 +109,11 @@ class SingleProduct extends StatelessWidget {
                         width: 5,
                       ),
                       Count(
-                        productPrice: productPrice,
-                        productName: productName,
-                        productImage: productImage,
-                        productId: productId,
+                        productPrice: widget.productPrice,
+                        productName: widget.productName,
+                        productImage: widget.productImage,
+                        productId: widget.productId,
+                        productUnit: selectedUnit,
                       )
                     ],
                   )

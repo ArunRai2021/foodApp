@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/model/user_model.dart';
 
 class MyProfile extends StatelessWidget {
-  const MyProfile({super.key});
+  final UserModel? userData;
+
+  const MyProfile({super.key, this.userData});
 
   Widget listTile({required IconData icon, required String title}) {
     return Column(
@@ -66,7 +69,7 @@ class MyProfile extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Arun Rai",
+                                    userData?.userName ?? "",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -75,7 +78,7 @@ class MyProfile extends StatelessWidget {
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  const Text("arunraihrit@gmail.com")
+                                  Text(userData?.userEmail ?? "")
                                 ],
                               ),
                               CircleAvatar(
@@ -114,13 +117,13 @@ class MyProfile extends StatelessWidget {
               )
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 40, left: 30),
+          Padding(
+            padding: const EdgeInsets.only(top: 40, left: 30),
             child: CircleAvatar(
               radius: 50,
               child: CircleAvatar(
                 radius: 40,
-                backgroundImage: NetworkImage(
+                backgroundImage: NetworkImage(userData?.userImage ??
                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSel7zJCCRNU-JrttTseABH1L8tWwZCNYT8aw&s"),
               ),
             ),

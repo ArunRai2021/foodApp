@@ -6,11 +6,13 @@ class ReviewCartModel {
   int? cartQuantity;
   String? productImage;
   int? productPrice;
+  var cartUnit;
 
   ReviewCartModel(
       {this.cartId,
       this.cartImage,
       this.cartName,
       this.cartPrice,
-      this.cartQuantity});
+      this.cartQuantity,
+      this.cartUnit});
 }

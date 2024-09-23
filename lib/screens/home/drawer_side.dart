@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/providers/user_provider.dart';
 import 'package:food_app/screens/my_profile/my_profile.dart';
 import 'package:food_app/screens/reviewCart/review_cart.dart';
 import 'package:food_app/screens/wishList/wishList.dart';
 
 class DrawerSide extends StatelessWidget {
-  const DrawerSide({super.key});
+  final UserProvider? userProvider;
+
+  const DrawerSide({super.key, this.userProvider});
 
   Widget listTile(
       {required IconData icon, required String title, Function()? onTap}) {
@@ -24,6 +27,7 @@ class DrawerSide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userData = userProvider?.currentUserData;
     return Drawer(
       child: Container(
         width: 100,
@@ -31,45 +35,33 @@ class DrawerSide extends StatelessWidget {
         child: ListView(
           children: [
             DrawerHeader(
-                child: Row(
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.white54,
-                  radius: 43,
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.red,
-                    backgroundImage: NetworkImage(
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSel7zJCCRNU-JrttTseABH1L8tWwZCNYT8aw&s"),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Welcome Guest",
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white54,
+                    radius: 43,
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.red,
+                      backgroundImage: NetworkImage(userData?.userImage ??
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSel7zJCCRNU-JrttTseABH1L8tWwZCNYT8aw&s"),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 6),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 1),
-                          borderRadius: BorderRadius.circular(12)),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 12),
-                      ),
-                    )
-                  ],
-                )
-              ],
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(userData!.userName.toString()),
+                      Text(userData!.userEmail.toString())
+                    ],
+                  )
+                ],
+              ),
             )),
             listTile(icon: Icons.home_outlined, title: "Home"),
             listTile(
@@ -87,7 +79,9 @@ class DrawerSide extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (BuildContext context) {
-                    return const MyProfile();
+                    return MyProfile(
+                      userData: userData,
+                    );
                   }));
                 }),
             listTile(

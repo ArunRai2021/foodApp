@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/model/review_cart_model.dart';
 import 'package:food_app/providers/review_cart_provider.dart';
+import 'package:food_app/screens/check_out/delievery_detail/deleivery_detail.dart';
 import 'package:food_app/widget/single_item.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,7 @@ class ReviewCart extends StatelessWidget {
       bottomNavigationBar: ListTile(
         title: const Text("Total Amount"),
         subtitle: Text(
-          "\$ 170.00",
+          "\$${reviewCartProvider.getTotalPrice()}",
           style: TextStyle(color: Colors.green[900]),
         ),
         trailing: Container(
@@ -53,7 +54,12 @@ class ReviewCart extends StatelessWidget {
             color: primaryColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                return const DeleiveryDetail();
+              }));
+            },
             child: const Text("Submit"),
           ),
         ),
@@ -83,6 +89,7 @@ class ReviewCart extends StatelessWidget {
                       productPrice: data.cartPrice,
                       productId: data.cartId,
                       productQuantity: data.cartQuantity,
+                      productUnit: data.cartUnit,
                       onDelete: () {
                         showAlertDialog(context, data);
                       },

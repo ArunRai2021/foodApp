@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/providers/review_cart_provider.dart';
+import 'package:food_app/widget/count.dart';
 import 'package:provider/provider.dart';
 
-class SingleItem extends StatelessWidget {
+class SingleItem extends StatefulWidget {
   bool isBool = false;
   String? productImage;
   String? productName;
@@ -12,6 +14,7 @@ class SingleItem extends StatelessWidget {
   int? productQuantity;
   bool? isWishList = false;
   Function()? onDelete;
+  var productUnit;
 
   SingleItem(
       {super.key,
@@ -22,7 +25,27 @@ class SingleItem extends StatelessWidget {
       this.productId,
       this.productQuantity,
       this.isWishList,
-      this.onDelete});
+      this.onDelete,
+      this.productUnit});
+
+  @override
+  State<SingleItem> createState() => _SingleItemState();
+}
+
+class _SingleItemState extends State<SingleItem> {
+  int count = 0;
+
+  getCount() {
+    setState(() {
+      count = widget.productQuantity!;
+    });
+  }
+
+  @override
+  void initState() {
+    getCount();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +59,7 @@ class SingleItem extends StatelessWidget {
             height: 100,
             child: Center(
               child: Image.network(
-                productImage.toString(),
+                widget.productImage.toString(),
                 width: 80,
                 height: 80,
               ),
@@ -56,50 +79,93 @@ class SingleItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          productName.toString(),
+                          widget.productName.toString(),
                           style: const TextStyle(
                               fontWeight: FontWeight.w600, color: Colors.black),
                         ),
                         Text(
-                          "${productPrice.toString()} Rs",
+                          "${widget.productPrice.toString()} Rs",
                           style: const TextStyle(color: Colors.grey),
                         )
                       ],
                     ),
-                    isBool
-                        ? const Text("50 Gram")
-                        : Container(
-                            margin: const EdgeInsets.only(right: 15),
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            height: 35,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey,
-                                ),
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  "50 Gram",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
-                                ),
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  size: 20,
-                                  color: primaryColor,
-                                )
-                              ],
+                    widget.isBool
+                        ? Text(widget.productUnit)
+                        : GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Column(
+                                      children: <Widget>[
+                                        ListTile(
+                                          title: const Text("100 gram"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: const Text("500 gram"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: const Text("50 gram"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: const Text("80 gram"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: const Text("120 gram"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 15),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              height: 35,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    "50 Gram",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 14),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 20,
+                                    color: primaryColor,
+                                  )
+                                ],
+                              ),
                             ),
                           )
                   ],
                 ))),
-        isBool
+        widget.isBool
             ? Expanded(
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: onDelete,
+                      onTap: widget.onDelete,
                       child: const Icon(
                         Icons.delete,
                         color: Colors.black,
@@ -108,19 +174,50 @@ class SingleItem extends StatelessWidget {
                     const SizedBox(
                       height: 5,
                     ),
-                    isWishList == false
+                    widget.isWishList == false
                         ? Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(color: Colors.grey)),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 6),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(Icons.remove),
-                                Text("1"),
-                                Icon(Icons.add)
+                                GestureDetector(
+                                    onTap: () {
+                                      if (count == 1) {
+                                        Fluttertoast.showToast(
+                                            msg: "You Reach Minimum Limit");
+                                      } else {
+                                        setState(() {
+                                          count--;
+                                        });
+                                        reviewCardProvider.updateReviewCartData(
+                                            cartName: widget.productName,
+                                            cartPrice: widget.productPrice,
+                                            cartImage: widget.productImage,
+                                            cartId: widget.productId,
+                                            cartQuantity: count);
+                                      }
+                                    },
+                                    child: const Icon(Icons.remove)),
+                                Text(count.toString()),
+                                GestureDetector(
+                                    onTap: () {
+                                      if (count < 10) {
+                                        setState(() {
+                                          count++;
+                                        });
+                                      }
+                                      reviewCardProvider.updateReviewCartData(
+                                          cartQuantity: count,
+                                          cartId: widget.productId,
+                                          cartImage: widget.productImage,
+                                          cartPrice: widget.productPrice,
+                                          cartName: widget.productName);
+                                    },
+                                    child: const Icon(Icons.add))
                               ],
                             ),
                           )
@@ -128,20 +225,7 @@ class SingleItem extends StatelessWidget {
                   ],
                 ),
               )
-            : Expanded(
-                child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.grey)),
-                    child: Center(
-                        child: Text(
-                      "+ Add",
-                      style: TextStyle(
-                          color: primaryColor, fontWeight: FontWeight.bold),
-                    ))),
-              )
+            : Count()
       ],
     );
   }
